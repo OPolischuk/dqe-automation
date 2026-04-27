@@ -1,2 +1,11 @@
+# secretes
+profiles.yml
+.env
+*.env
+
 # virtual env
-venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
