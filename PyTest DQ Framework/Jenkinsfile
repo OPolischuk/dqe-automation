@@ -2,47 +2,53 @@ pipeline {
     agent any
     
     environment {
-        // Fetching DB credentials from Jenkins Secure Storage
+        // Отримуємо облікові дані з Jenkins (ID має бути 'postgres_db_credentials')
         DB_CREDS = credentials('postgres_db_credentials')
     }
     
     stages {
         stage('Checkout') {
             steps {
+                // Клонуємо репозиторій
                 checkout scm
             }
         }
         
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                // Заходимо в папку проекту і встановлюємо бібліотеки
+                dir('PyTest DQ Framework') {
+                    sh 'pip install -r requirements.txt'
+                }
             }
         }
         
         stage('Run Data Quality Tests') {
             steps {
-                // Executing pytest with command-line arguments
-                sh """
-                pytest tests -m "parquet_data" \
-                --db_host="localhost" \
-                --db_port="5434" \
-                --db_name="mydatabase" \
-                --db_user="${DB_CREDS_USR}" \
-                --db_password="${DB_CREDS_PSW}" \
-                --html=html_report/report.html --self-contained-html
-                """
+                // Заходимо в папку проекту і запускаємо тести
+                dir('PyTest DQ Framework') {
+                    sh """
+                    pytest tests -m "parquet_data" \
+                    --db_host="localhost" \
+                    --db_port="5434" \
+                    --db_name="mydatabase" \
+                    --db_user="${DB_CREDS_USR}" \
+                    --db_password="${DB_CREDS_PSW}" \
+                    --html=html_report/report.html --self-contained-html
+                    """
+                }
             }
         }
     }
     
     post {
         always {
-            // Archive the test report even if tests fail
+            // Публікуємо HTML звіт, вказуючи шлях до підпапки
             publishHTML(target: [
                 allowMissing: false,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
-                reportDir: 'html_report',
+                reportDir: 'PyTest DQ Framework/html_report',
                 reportFiles: 'report.html',
                 reportName: 'Data Quality Report'
             ])
