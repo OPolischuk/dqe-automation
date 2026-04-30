@@ -1,0 +1,17 @@
+# Testing Framework
+pytest==9.0.3
+pytest-html==4.2.0
+pytest-metadata==3.1.1
+allure-pytest==2.15.3
+
+# Data Processing
+pandas==2.2.1
+pyarrow==15.0.0
+fastparquet==2024.2.0
+
+# Database Connectors
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.28
+
+# Utilities
+python-dateutil>=2.8.2

@@ -1,35 +1,35 @@
 import pandas as pd
 
-
 class DataQualityLibrary:
-    """
-    A library of static methods for performing data quality checks on pandas DataFrames.
+    def check_dataset_is_not_empty(self, df: pd.DataFrame):
+        # Verify that the dataset contains at least one row
+        assert not df.empty, "DQE Error: The dataset is empty!"
 
-    This class is intended to be used in a PyTest-based testing framework to validate
-    the quality of data in DataFrames. Each method performs a specific data quality
-    check and uses assertions to ensure that the data meets the expected conditions.
-    """
+    def check_count(self, source_df: pd.DataFrame, target_df: pd.DataFrame):
+        # Compare row counts between source and target
+        source_count = len(source_df)
+        target_count = len(target_df)
+        assert source_count == target_count, \
+            f"DQE Error: Row count mismatch! Source: {source_count}, Target: {target_count}"
 
-    @staticmethod
-    def check_duplicates(df, column_names=None):
-        if column_names:
-            df.duplicates(column_names)
-        else:
-            df.duplicates(all_columns)
+    def check_data_completeness(self, source_df: pd.DataFrame, target_df: pd.DataFrame):
+        # Perform a full content comparison after sorting
+        source_sorted = source_df.sort_values(by=list(source_df.columns)).reset_index(drop=True)
+        target_sorted = target_df.sort_values(by=list(target_df.columns)).reset_index(drop=True)
+        
+        # Check if the dataframes are identical
+        pd.testing.assert_frame_equal(source_sorted, target_sorted, 
+                                      obj="Source vs Target Data Completeness")
 
-    @staticmethod
-    def check_count(df1, df2):
-        df1.count = df2.count
+    def check_duplicates(self, df: pd.DataFrame):
+        # Verify uniqueness of records
+        duplicates_count = df.duplicated().sum()
+        assert duplicates_count == 0, \
+            f"DQE Error: Found {duplicates_count} duplicate rows in the dataset!"
 
-    @staticmethod
-    def check_data_full_data_set(df1, df2):
-        df1 = df2
-
-    @staticmethod
-    def check_dataset_is_not_empty(df):
-        df.is_not_empty
-
-    @staticmethod
-    def check_not_null_values(df, column_names=None):
-        col for df.column_names:
-            col.not_null
+    def check_not_null_values(self, df: pd.DataFrame, columns: list):
+        # Validate that specific columns do not contain NULL/NaN values
+        for col in columns:
+            null_count = df[col].isnull().sum()
+            assert null_count == 0, \
+                f"DQE Error: Column '{col}' contains {null_count} null values!"
