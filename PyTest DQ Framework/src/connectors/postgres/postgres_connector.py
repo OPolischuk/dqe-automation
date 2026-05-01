@@ -15,7 +15,7 @@ class PostgresConnectorContextManager:
         # Establish the connection to the PostgreSQL database
         self.connection = psycopg.connect(
             host=self.db_host,
-            port=self.db_host,
+            port=self.db_port,
             dbname=self.db_name,
             user=self.db_user,
             password=self.db_password
