@@ -16,9 +16,9 @@ pipeline {
             steps {
                 dir('PyTest DQ Framework') {
                     sh '''
-                    # Створюємо віртуальне оточення
+                    # virtual env
                     python3 -m venv venv
-                    # Встановлюємо пакети всередину venv
+                    # install virtual env
                     ./venv/bin/pip install --upgrade pip
                     ./venv/bin/pip install -r requirements.txt
                     '''
@@ -30,10 +30,10 @@ pipeline {
             steps {
                 dir('PyTest DQ Framework') {
                     sh """
-                    # Створюємо папку для звіту заздалегідь
+                    # create folder for report
                     mkdir -p html_report
                     
-                    # Запускаємо pytest через venv
+                    # run pytest
                     ./venv/bin/pytest tests -m "parquet_data" \
                     --db_host="host.containers.internal" \
                     --db_port="5432" \
@@ -49,9 +49,9 @@ pipeline {
     
     post {
         always {
-            // Тепер папка html_report точно існує, тому помилки не буде
+            // folder
             publishHTML(target: [
-                allowMissing: true, // Змінив на true, щоб білд не падав, якщо тести взагалі не запустилися
+                allowMissing: true,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
                 reportDir: 'PyTest DQ Framework/html_report',

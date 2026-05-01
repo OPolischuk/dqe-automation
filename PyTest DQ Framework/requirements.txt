@@ -10,7 +10,7 @@ pyarrow>=18.0.0
 fastparquet==2024.5.0
 
 # Database Connectors
-psycopg2-binary==2.9.9
+psycopg[binary]==3.2.4
 sqlalchemy==2.0.35
 
 # Utilities

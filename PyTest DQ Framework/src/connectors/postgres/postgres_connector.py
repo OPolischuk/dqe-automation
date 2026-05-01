@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg
 import pandas as pd
 
 class PostgresConnectorContextManager:
@@ -13,10 +13,10 @@ class PostgresConnectorContextManager:
 
     def __enter__(self):
         # Establish the connection to the PostgreSQL database
-        self.connection = psycopg2.connect(
+        self.connection = psycopg.connect(
             host=self.db_host,
-            port=self.db_port,
-            database=self.db_name,
+            port=self.db_host,
+            dbname=self.db_name,
             user=self.db_user,
             password=self.db_password
         )
@@ -29,5 +29,4 @@ class PostgresConnectorContextManager:
 
     def get_data_sql(self, sql: str):
         # Execute SQL query and return the result as a pandas DataFrame
-        # pd.read_sql maps the database result set directly to a DataFrame
         return pd.read_sql(sql, self.connection)
