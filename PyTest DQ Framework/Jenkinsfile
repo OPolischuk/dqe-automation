@@ -2,14 +2,13 @@ pipeline {
     agent any
     
     environment {
-        // Get credentials from Jenkins (ID should be 'postgres_db_credentials')
+        // credantials
         DB_CREDS = credentials('postgres_db_credentials')
     }
     
     stages {
         stage('Checkout') {
             steps {
-                // clone repo
                 checkout scm
             }
         }
@@ -17,7 +16,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('PyTest DQ Framework') {
-                    // add flag --break-system-packages
+                    sh 'pip install --upgrade pip'
                     sh 'pip install -r requirements.txt --break-system-packages'
                 }
             }
@@ -25,9 +24,12 @@ pipeline {
         
         stage('Run Data Quality Tests') {
             steps {
-                // find folder & run the tests
                 dir('PyTest DQ Framework') {
                     sh """
+                    # Створюємо папку для звіту, якщо її немає
+                    mkdir -p html_report
+                    
+                    # Запуск тестів
                     pytest tests -m "parquet_data" \
                     --db_host="localhost" \
                     --db_port="5434" \
@@ -43,7 +45,7 @@ pipeline {
     
     post {
         always {
-            // publish report
+            // publish the report
             publishHTML(target: [
                 allowMissing: false,
                 alwaysLinkToLastBuild: true,
