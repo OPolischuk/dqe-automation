@@ -6,7 +6,7 @@ allure-pytest==2.13.5
 
 # Data Processing
 pandas==2.2.3
-pyarrow==17.0.0
+pyarrow>=18.0.0
 fastparquet==2024.5.0
 
 # Database Connectors
