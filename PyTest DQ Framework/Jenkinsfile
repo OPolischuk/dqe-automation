@@ -36,7 +36,7 @@ pipeline {
                     # run pytest
                     ./venv/bin/pytest tests -m "parquet_data" \
                     --db_host="host.containers.internal" \
-                    --db_port="5432" \
+                    --db_port="5434" \
                     --db_name="mydatabase" \
                     --db_user="${DB_CREDS_USR}" \
                     --db_password="${DB_CREDS_PSW}" \
